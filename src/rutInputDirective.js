@@ -2,7 +2,7 @@
     "use strict";
 
     function rutInput() {
-        
+
         return {
             restrict: "EA",
             require: "?ngModel",
@@ -17,4 +17,4 @@
         .module("mjr.rut")
         .directive("rutInput", rutInput);
 })(angular);
-//rutValidator.format(newValue);
+

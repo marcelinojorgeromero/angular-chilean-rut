@@ -1,6 +1,6 @@
 (function(angular){
     "use strict";
-    
+
     function rutFormatterDirective(rutApi){
         function rutFormatterLinker(scope, elem, attrs, ctrl) {
             if (!ctrl) return;
@@ -32,16 +32,16 @@
                 return formattedRut;
             });
         }
-        
+
         return {
             restrict: "A",
             require: "?ngModel",
             link: rutFormatterLinker
         };
     }
-    
+
     rutFormatterDirective.$inject = ["rutApi"];
-    
+
     angular
         .module("mjr.rut")
         .directive("rutFormatter", rutFormatterDirective);
