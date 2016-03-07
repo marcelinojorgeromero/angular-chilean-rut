@@ -1,3 +1,18 @@
+(function(angular){
+    "use strict";
+
+    angular.module("rutInputTemplate.html", []).run(["$templateCache", function($templateCache){
+        $templateCache.put("rutInputTemplate.html", '<input type="text" ng-model="rutmodel" rut-validator="" rut-formatter="{{formatOptions}}" class="form-control">');
+    }]);
+
+    angular.module("app.rut.tpls", ["rutInputTemplate.html"]);
+})(angular);
+(function(angular){
+    "use strict";
+
+    angular
+        .module("mjr.rut", ["app.rut.tpls"])
+})(angular);
 (function (angular) {
     "use strict";
 
@@ -188,3 +203,122 @@
         .module("mjr.rut")
         .provider("rutApi", rutApiProvider);
 })(angular);
+(function(angular) {
+    "use strict";
+
+    function rutInput() {
+
+        return {
+            restrict: "EA",
+            require: "?ngModel",
+            templateUrl: "rutInputTemplate.html",
+            scope: {
+                formatOptions: "@"
+            }
+        };
+    }
+
+    angular
+        .module("mjr.rut")
+        .directive("rutInput", rutInput);
+})(angular);
+(function(angular) {
+    "use strict";
+
+    function rutValidatorDirective(rutApi) {
+
+        function rutValidatorLinker(scope, elem, attr, ngModel) {
+            function validator(value){
+                var isRutValid = rutApi.isRutValid(value);
+                ngModel.$setValidity("rutValidator", isRutValid);
+                return isRutValid;
+            }
+            ngModel.$parsers.unshift(function(value) {
+                var isRutValid = validator(value);
+                return isRutValid ? value : undefined;
+            });
+
+            ngModel.$formatters.unshift(function(value) {
+                validator(value);
+                return value;
+            });
+        }
+
+        return {
+            restrict: "A",
+            require: "ngModel",
+            link: rutValidatorLinker
+        };
+    }
+
+    rutValidatorDirective.$inject = ["rutApi"];
+
+    angular
+        .module("mjr.rut")
+        .directive("rutValidator", rutValidatorDirective);
+})(angular);
+(function(angular){
+    "use strict";
+
+    function rutFormatterDirective(rutApi){
+        function rutFormatterLinker(scope, elem, attrs, ctrl) {
+            if (!ctrl) return;
+
+            var defaultFormatInstructions = {
+                formatBody: true,
+                formatDv: true,
+                bodyDelimiter: ".",
+                dvDelimiter: "-"
+            };
+
+            var userFormatInstructions;
+            try {
+                userFormatInstructions = JSON.parse(attrs.rutFormatter);
+            } catch (ex){
+                throw "format options are not in a valid json format.";
+            }
+
+            var formatInstructions = angular.extend({}, defaultFormatInstructions, userFormatInstructions);
+
+            ctrl.$formatters.unshift(function() {
+                var formatted = rutApi.format(ctrl.$modelValue);
+                return formatted;
+            });
+
+            ctrl.$parsers.unshift(function(viewValue) {
+                var formattedRut = rutApi.format(viewValue);
+                elem.val(formattedRut);
+                return formattedRut;
+            });
+        }
+
+        return {
+            restrict: "A",
+            require: "?ngModel",
+            link: rutFormatterLinker
+        };
+    }
+
+    rutFormatterDirective.$inject = ["rutApi"];
+
+    angular
+        .module("mjr.rut")
+        .directive("rutFormatter", rutFormatterDirective);
+})(angular);
+(function(angular){
+    "use strict";
+
+    function rutFilter(rutApi) {
+        return function (input) {
+            var formattedRut = rutApi.format(input);
+            return formattedRut;
+        }
+    }
+
+    rutFilter.$inject = ["rutApi"];
+
+    angular
+        .module("mjr.rut")
+        .filter("rutFilter", rutFilter);
+})(angular);
+

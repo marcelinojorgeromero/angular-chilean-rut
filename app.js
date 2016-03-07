@@ -8,8 +8,7 @@
     
     angular
         .module("app", [
-            "mjr.rut",
-            "ngMessages"
+            "mjr.rut"
         ])
         .controller("mainCtrl", mainCtrl);
 })(angular);
