@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <link data-require="bootstrap-css@*" data-semver="3.3.6" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" />
+    <script data-require="jquery@*" data-semver="2.2.0" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script data-require="angular.js@1.4.9" data-semver="1.4.9" src="https://code.angularjs.org/1.4.9/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-messages.min.js"></script>
+
+    <script src="app.rut.js"></script>
+    <script src="app.js"></script>
+
+    <script src="rutHelperProvider.js"></script>
+    <script src="rutInputDirective.js"></script>
+    <script src="rutValidatorDirective.js"></script>
+    <script src="rutFormatterDirective.js"></script>
+    <script src="rutFilter.js"></script>
+</head>
+
+<body class="container-fluid" ng-controller="mainCtrl as vm">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Chilean Rut validator for Angular</h1>
+            <input type="text" ng-model="vm.rutmodel" rut-formatter='{"bodyDelimiter":".", "dvDelimiter":"-"}' class="form-control">
+            <pre>{{ vm.rutmodel|json }}</pre>
+        </div>
+    </div>
+</body>
+</html>
