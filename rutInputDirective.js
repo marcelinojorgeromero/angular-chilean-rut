@@ -1,16 +1,17 @@
 (function(angular) {
     "use strict";
 
-    function rutInput(rutValidator) {
+    function rutInput() {
         
         return {
             restrict: "EA",
             require: "?ngModel",
-            templateUrl: "rutInput.html"
+            templateUrl: "rutInputTemplate.html",
+            scope: {
+                formatOptions: "@"
+            }
         };
     }
-
-    rutInput.$inject = ["rutValidator"];
 
     angular
         .module("mjr.rut")

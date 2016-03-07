@@ -1,7 +1,7 @@
 (function (angular) {
     "use strict";
 
-    function rutHelperProvider() {
+    function rutApiProvider() {
         function StringBuilder(str) {
             this.value = str;
             return this;
@@ -36,7 +36,7 @@
         //};
 
         var minimumRutLength = 3;
-         
+
         function calculateDigitoVerificador(sRutSinDigitoVerificador) {
             var rut = removeFormat(sRutSinDigitoVerificador);
             if (isNullOrWhiteSpace(rut)) throw "Invalid Argument: sRutSinDigitoVerificador"
@@ -47,7 +47,7 @@
             var digitoVerificadorLetraK = "K",
                 factorInicial = 2,
                 factorUltimo = 7;
-            
+
             var indiceFactor = factorInicial - 1;
             var rutReverted = new StringBuilder(removeFormat(sRutSinDigitoVerificador)).reverse();
             var calculatedSum = rutReverted.sum(function (numChr) {
@@ -71,17 +71,17 @@
             }
             return digitoVerificador;
         }
-        
+
         function formatRut(rutCompleto, bFormatRut, bFormatDigitoVerificador, cFormatRutDelimiter, cFormatDigitoVerificadorDelimiter) {
             var rutPurificado = removeFormat(rutCompleto);
             if (isNullOrWhiteSpace(rutPurificado)) return "";
             if (isRutLessThanTheMinimun(rutPurificado)) return rutPurificado;
-            
+
             bFormatRut = bFormatRut || true;
             bFormatDigitoVerificador = bFormatDigitoVerificador || true;
             cFormatRutDelimiter = cFormatRutDelimiter || ".";
             cFormatDigitoVerificadorDelimiter = cFormatDigitoVerificadorDelimiter || "-";
-            
+
             if (rutPurificado.length < minimumRutLength) return rutPurificado;
 
             var formatRutWithDelimiter = function (rutSinDigitoVerificador, strToFormat) {
@@ -101,9 +101,10 @@
 
             return formatted.append(digitoVerificador).toString();
         }
-        
+
         function getRutSinDigitoVerificador(sRutCompleto) {
-            if (isRutNullOrEmptyOrLessThanTheMinimum(sRutCompleto)) throw "Invalid Argument: sRutCompleto";
+            if (isNullOrWhiteSpace(sRutCompleto)) return "";
+            if (isRutLessThanTheMinimun(sRutCompleto) || !validateCompleteRut(sRutCompleto)) return sRutCompleto;
             var rut = parseInt(removeFormat(sRutCompleto.substring(0, sRutCompleto.length - 1)));
             return rut;
         }
@@ -111,16 +112,17 @@
         function _getRutSinDigitoVerificador(sRutCompleto) {
             return sRutCompleto.substring(0, sRutCompleto.length - 1);
         }
-                
+
         function getDigitoVerificador(sRutCompleto) {
             if (isNullOrWhiteSpace(sRutCompleto)) throw "Invalid Argument: sRutCompleto";
+            if (!validateCompleteRut(sRutCompleto)) return "";
             return _getDigitoVerificador(sRutCompleto);
         }
 
         function _getDigitoVerificador(sRutCompleto) {
             return sRutCompleto.charAt(sRutCompleto.length - 1);
         }
-        
+
         function removeFormat(sRutCompleto) {
             if(isNullOrWhiteSpace(sRutCompleto)) return "";
             var sRut = sRutCompleto;
@@ -140,11 +142,11 @@
         function isRutLessThanTheMinimun(sRutCompleto){
             return sRutCompleto.length < minimumRutLength;
         }
-        
+
         function isRutNullOrEmptyOrLessThanTheMinimum(sRutCompleto){
             return isNullOrWhiteSpace(sRutCompleto) || sRutCompleto.length < minimumRutLength;
         }
-        
+
         function isRutValid() {
             return arguments.length == 1 ?  validateCompleteRut(arguments[0]) : validateSeparatedRutAndDigitoVerificador(arguments[0], arguments[1]);
         }
@@ -155,7 +157,7 @@
             var sDv = _getDigitoVerificador(sRutCompleto);
             return _isRutValid(rutSinDv, sDv);
         }
-        
+
         function validateSeparatedRutAndDigitoVerificador(sRutSinDigitoVerificador, sDigitoVerificador) {
             if (isNullOrWhiteSpace(sDigitoVerificador) || isNullOrWhiteSpace(sRutSinDigitoVerificador)) return false;
             return _isRutValid(sRutSinDigitoVerificador, sDigitoVerificador);
@@ -181,8 +183,8 @@
             }
         });
     }
-    
+
     angular
         .module("mjr.rut")
-        .provider("rutHelper", rutHelperProvider);
+        .provider("rutApi", rutApiProvider);
 })(angular);

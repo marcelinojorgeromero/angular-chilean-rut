@@ -1,21 +1,21 @@
 (function(angular) {
     "use strict";
 
-    function rutValidatorDirective(rutHelper) {
+    function rutValidatorDirective(rutApi) {
 
         function rutValidatorLinker(scope, elem, attr, ngModel) {
-
-            //For DOM -> model validation
-            ngModel.$parsers.unshift(function(value) {
-                var isRutValid = rutHelper.isRutValid(value);
+            function validator(value){
+                var isRutValid = rutApi.isRutValid(value);
                 ngModel.$setValidity("rutValidator", isRutValid);
-                 return isRutValid ? value : undefined;
+                return isRutValid;
+            }
+            ngModel.$parsers.unshift(function(value) {
+                var isRutValid = validator(value);
+                return isRutValid ? value : undefined;
             });
 
-            //For model -> DOM validation
             ngModel.$formatters.unshift(function(value) {
-                var isRutValid = rutHelper.isRutValid(value);
-                ngModel.$setValidity("rutValidator", isRutValid);
+                validator(value);
                 return value;
             });
         }
@@ -27,7 +27,7 @@
         };
     }
 
-    rutValidatorDirective.$inject = ["rutHelper"];
+    rutValidatorDirective.$inject = ["rutApi"];
 
     angular
         .module("mjr.rut")

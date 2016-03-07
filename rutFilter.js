@@ -1,15 +1,14 @@
 (function(angular){
     "use strict";
     
-    function rutFilter(rutHelper) {
+    function rutFilter(rutApi) {
         return function (input) {
-            var formatted = rutHelper.format(input);
-            console.log("formatted rut filter: " + formatted);
-            return formatted;
+            var formattedRut = rutApi.format(input);
+            return formattedRut;
         }
     }
     
-    rutFilter.$inject = ["rutHelper"];
+    rutFilter.$inject = ["rutApi"];
     
     angular
         .module("mjr.rut")

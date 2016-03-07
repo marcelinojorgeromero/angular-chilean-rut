@@ -1,12 +1,10 @@
 (function(angular){
     "use strict";
     
-    function rutFormatterDirective(rutHelper, $filter){
+    function rutFormatterDirective(rutApi){
         function rutFormatterLinker(scope, elem, attrs, ctrl) {
-            if (!ctrl) {
-                console.log("No ctrl!");
-                return;
-            }
+            if (!ctrl) return;
+
             var defaultFormatInstructions = {
                 formatBody: true,
                 formatDv: true,
@@ -14,16 +12,22 @@
                 dvDelimiter: "-"
             };
 
-            var userFormatInstructions = JSON.parse(attrs.rutFormatter);
+            var userFormatInstructions;
+            try {
+                userFormatInstructions = JSON.parse(attrs.rutFormatter);
+            } catch (ex){
+                throw "format options are not in a valid json format.";
+            }
+
             var formatInstructions = angular.extend({}, defaultFormatInstructions, userFormatInstructions);
 
             ctrl.$formatters.unshift(function() {
-                var formatted = $filter("rutFilter")(ctrl.$modelValue);
+                var formatted = rutApi.format(ctrl.$modelValue);
                 return formatted;
             });
 
             ctrl.$parsers.unshift(function(viewValue) {
-                var formattedRut = $filter("rutFilter")(viewValue);
+                var formattedRut = rutApi.format(viewValue);
                 elem.val(formattedRut);
                 return formattedRut;
             });
@@ -36,7 +40,7 @@
         };
     }
     
-    rutFormatterDirective.$inject = ["rutHelper", "$filter"];
+    rutFormatterDirective.$inject = ["rutApi"];
     
     angular
         .module("mjr.rut")
