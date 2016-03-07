@@ -148,7 +148,7 @@
         }
 
         function isRutValid() {
-            return arguments.length == 1 ?  validateCompleteRut(arguments[0]) : validateSeparatedRutAndDigitoVerificador(arguments[0], arguments[1]);
+            return arguments.length === 1 ?  validateCompleteRut(arguments[0]) : validateSeparatedRutAndDigitoVerificador(arguments[0], arguments[1]);
         }
 
         function validateCompleteRut(sRutCompleto){
