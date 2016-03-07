@@ -1,6 +1,15 @@
 (function(angular){
     "use strict";
 
+    angular.module("rutInputTemplate.html", []).run(["$templateCache", function($templateCache){
+        $templateCache.put("rutInputTemplate.html", '<input type="text" ng-model="rutmodel" rut-validator="" rut-formatter="{{formatOptions}}" class="form-control">');
+    }]);
+
+    angular.module("app.rut.tpls", ["rutInputTemplate.html"]);
+})(angular);
+(function(angular){
+    "use strict";
+
     angular
         .module("mjr.rut", [])
 })(angular);
@@ -154,7 +163,7 @@
         }
 
         function isRutValid() {
-            return arguments.length == 1 ?  validateCompleteRut(arguments[0]) : validateSeparatedRutAndDigitoVerificador(arguments[0], arguments[1]);
+            return arguments.length === 1 ?  validateCompleteRut(arguments[0]) : validateSeparatedRutAndDigitoVerificador(arguments[0], arguments[1]);
         }
 
         function validateCompleteRut(sRutCompleto){
