@@ -11,7 +11,7 @@
     "use strict";
 
     angular
-        .module("mjr.rut", [])
+        .module("mjr.rut", ["app.rut.tpls"])
 })(angular);
 (function (angular) {
     "use strict";
